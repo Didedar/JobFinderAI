@@ -118,7 +118,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Инициализация базы данных
 db = SQLAlchemy(app)
 
-# Обновленная модель User с полями email и user_type
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
@@ -171,11 +170,6 @@ class FavoriteVacancy(db.Model):
 
 with app.app_context():
     db.create_all()
-
-# Создание базы данных (при первом запуске)
-with app.app_context():
-    db.create_all()
-    print("Database created/checked.") # Feedback on database creation
 
 @app.route("/add_to_favorites", methods=["POST"])
 def add_to_favorites():
@@ -331,6 +325,11 @@ def logout():
 @app.errorhandler(RequestEntityTooLarge)
 def handle_file_too_large(error):
     return jsonify({"error": "File size exceeds the limit (16MB)"}), 413
+
+@app.errorhandler(Exception)
+def handle_exception(error):
+    app.logger.error(f"Unhandled exception: {error}", exc_info=True)
+    return render_template("error.html", error=error), 500
 
 @app.route("/")
 def index():
