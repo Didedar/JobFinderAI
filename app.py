@@ -326,11 +326,6 @@ def logout():
 def handle_file_too_large(error):
     return jsonify({"error": "File size exceeds the limit (16MB)"}), 413
 
-@app.errorhandler(Exception)
-def handle_exception(error):
-    app.logger.error(f"Unhandled exception: {error}", exc_info=True)
-    return render_template("error.html", error=error), 500
-
 @app.route("/")
 def index():
     return render_template("index.html")
