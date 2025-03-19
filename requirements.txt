@@ -11,3 +11,4 @@ tenacity
 Flask-SQLAlchemy
 Flask-WTF
 WTForms
+gunicorn
