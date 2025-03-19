@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}JobFinder - Register{% endblock %}
+
+{% block content %}
+    <section class="auth-section">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-title">Create Your Account</h2>
+                <p class="section-subtitle">Join JobFinder and start your career journey</p>
+            </div>
+            <div class="auth-form" data-aos="fade-up" data-aos-delay="200">
+                <form method="POST" action="{{ url_for('register') }}">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ form.username.label(class="form-label") }}
+                        {{ form.username(class="form-input", placeholder="Enter your username") }}
+                        {% for error in form.username.errors %}
+                            <span class="error-message">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.email.label(class="form-label") }}
+                        {{ form.email(class="form-input", placeholder="Enter your email") }}
+                        {% for error in form.email.errors %}
+                            <span class="error-message">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.password.label(class="form-label") }}
+                        {{ form.password(class="form-input", placeholder="Enter your password") }}
+                        {% for error in form.password.errors %}
+                            <span class="error-message">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.password2.label(class="form-label") }}
+                        {{ form.password2(class="form-input", placeholder="Repeat your password") }}
+                        {% for error in form.password2.errors %}
+                            <span class="error-message">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </form>
+                <p class="auth-link">Already have an account? <a href="{{ url_for('login') }}">Sign in</a></p>
+            </div>
+        </div>
+    </section>
+{% endblock %}

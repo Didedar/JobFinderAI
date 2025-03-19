@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}JobFinder - Dashboard{% endblock %}
+
+{% block content %}
+    <section class="dashboard-section job-listings">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Ваш Dashboard</h2>
+                <p class="section-subtitle">Добро пожаловать, {{ user.username }}!</p>
+            </div>
+            <div class="user-info">
+                <h3>Личная информация</h3>
+                <p><strong>Имя пользователя:</strong> {{ user.username }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Тип пользователя:</strong> {{ user.user_type }}</p>
+            </div>
+            <div class="favorites">
+                <h3>Ваши избранные вакансии</h3>
+                {% if favorites %}
+                    <div class="job-cards" id="favoritesContainer">
+                        {% for favorite in favorites %}
+                            <div class="job-card" data-aos="fade-up" data-aos-delay="100">
+                                <div class="job-card-inner">
+                                    <h3 class="job-title">{{ favorite.vacancy_title }}</h3>
+                                    <div class="job-company">{{ favorite.vacancy_company }}</div>
+                                    <div class="job-details">
+                                        {{ favorite.employment_type or 'Not specified' }} | 
+                                        {% if favorite.salary_from or favorite.salary_to %}
+                                            {% if favorite.salary_from %}from {{ favorite.salary_from }}{% endif %}
+                                            {% if favorite.salary_to %}{% if favorite.salary_from %} to {% endif %}{{ favorite.salary_to }}{% endif %}
+                                            {% if favorite.salary_currency %}{{ favorite.salary_currency }}{% endif %}
+                                        {% else %}
+                                            Salary not specified
+                                        {% endif %}
+                                    </div>
+                                    <div class="similarity-score">
+                                        Similarity-scores: <span class="job-similarity">{{ "%.2f"|format(favorite.similarity_score * 100) }}%</span>
+                                    </div>
+                                    <div class="job-card-buttons">
+                                        <a href="{{ favorite.vacancy_url }}" class="job-apply-btn" target="_blank">Apply Now</a>
+                                        <button class="job-detailed-btn" 
+                                                data-vacancy-id="{{ favorite.vacancy_id }}"
+                                                data-vacancy-title="{{ favorite.vacancy_title }}"
+                                                data-vacancy-company="{{ favorite.vacancy_company }}"
+                                                data-vacancy-url="{{ favorite.vacancy_url }}"
+                                                data-employment-type="{{ favorite.employment_type }}"
+                                                data-salary-from="{{ favorite.salary_from }}"
+                                                data-salary-to="{{ favorite.salary_to }}"
+                                                data-salary-currency="{{ favorite.salary_currency }}"
+                                                data-snippet="{{ favorite.snippet }}"
+                                                data-similarity-score="{{ favorite.similarity_score }}"
+                                                data-location="{{ favorite.location }}"
+                                                data-experience-level="{{ favorite.experience_level }}">Detailed</button>
+                                        <button class="remove-favorite" data-vacancy-id="{{ favorite.vacancy_id }}">Удалить</button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>У вас пока нет избранных вакансий.</p>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Модальное окно -->
+    <div id="detailedModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-header">
+                <h2 class="modal-title"></h2>
+                <div class="modal-subheader">
+                    <div class="modal-company"></div>
+                    <div class="modal-match">
+                        <div class="match-score"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="job-info">
+                    <h3>Job Details</h3>
+                    <div class="modal-details"></div>
+                    <div class="modal-salary"></div>
+                    <div class="modal-employment"></div>
+                </div>
+                <div class="ai-analysis">
+                    <h3>AI Analysis</h3>
+                    <div class="analysis-loader">Loading analysis...</div>
+                    <div class="analysis-content" style="display: none;">
+                        <div class="recommendation-section">
+                            <h4>Recommendation</h4>
+                            <p class="recommendation"></p>
+                        </div>
+                        <div class="improvements-section">
+                            <h4>Resume Improvement Suggestions</h4>
+                            <ul class="resume-improvements"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-primary apply-btn" target="_blank">Apply Now</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const favoritesContainer = document.getElementById('favoritesContainer');
+            const modal = document.getElementById('detailedModal');
+            const closeModal = document.querySelector('.close-modal');
+
+            // Обработчик удаления вакансии
+            if (favoritesContainer) {
+                favoritesContainer.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('remove-favorite')) {
+                        const vacancyId = e.target.getAttribute('data-vacancy-id');
+                        fetch('/remove_from_favorites', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ vacancy_id: vacancyId })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            alert(data.message);
+                            if (data.message === "Vacancy removed from favorites") {
+                                e.target.closest('.job-card').remove();
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Ошибка:', error);
+                            alert('Произошла ошибка при удалении вакансии.');
+                        });
+                    }
+                });
+            }
+
+            // Обработчик детального просмотра
+            if (favoritesContainer) {
+                favoritesContainer.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('job-detailed-btn')) {
+                        const button = e.target;
+                        const vacancy = {
+                            id: button.getAttribute('data-vacancy-id'),
+                            title: button.getAttribute('data-vacancy-title'),
+                            company: button.getAttribute('data-vacancy-company'),
+                            url: button.getAttribute('data-vacancy-url'),
+                            employment_type: button.getAttribute('data-employment-type'),
+                            salary: {
+                                from: button.getAttribute('data-salary-from') ? parseInt(button.getAttribute('data-salary-from')) : null,
+                                to: button.getAttribute('data-salary-to') ? parseInt(button.getAttribute('data-salary-to')) : null,
+                                currency: button.getAttribute('data-salary-currency')
+                            },
+                            snippet: button.getAttribute('data-snippet'),
+                            similarity_score: parseFloat(button.getAttribute('data-similarity-score')),
+                            location: button.getAttribute('data-location'),
+                            experience_level: button.getAttribute('data-experience-level')
+                        };
+
+                        modal.querySelector('.modal-title').textContent = vacancy.title || 'Job title';
+                        modal.querySelector('.modal-company').textContent = `Company: ${vacancy.company || 'Not specified'}`;
+                        modal.querySelector('.modal-details').innerHTML = vacancy.snippet || 'Description not available';
+                        modal.querySelector('.modal-salary').textContent = `Salary: ${formatSalary(vacancy.salary)}`;
+                        modal.querySelector('.modal-employment').textContent = `Employment type: ${vacancy.employment_type || 'Not specified'}`;
+                        modal.querySelector('.match-score').textContent = `Match with your resume: ${Math.round(vacancy.similarity_score * 100)}%`;
+                        modal.querySelector('.apply-btn').href = vacancy.url || '#';
+
+                        // Запрос анализа соответствия
+                        fetch('/analyze-match', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                vacancy: vacancy,
+                                similarity_score: vacancy.similarity_score,
+                                resume_text: window.resumeText || ''
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(analysis => {
+                            modal.querySelector('.analysis-loader').style.display = 'none';
+                            modal.querySelector('.analysis-content').style.display = 'block';
+                            modal.querySelector('.recommendation').textContent = analysis.match_assessment || 'No assessment available';
+                            const improvementsList = modal.querySelector('.resume-improvements');
+                            improvementsList.innerHTML = '';
+                            if (analysis.recommendations && analysis.recommendations.length > 0) {
+                                analysis.recommendations.forEach(item => {
+                                    const li = document.createElement('li');
+                                    li.textContent = item;
+                                    improvementsList.appendChild(li);
+                                });
+                            } else {
+                                improvementsList.innerHTML = '<li>No specific recommendations</li>';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Analysis error:', error);
+                            modal.querySelector('.analysis-loader').style.display = 'none';
+                            modal.querySelector('.analysis-content').style.display = 'block';
+                            modal.querySelector('.recommendation').textContent = 'Unable to load analysis';
+                            modal.querySelector('.resume-improvements').innerHTML = '<li>Error loading recommendations</li>';
+                        });
+
+                        modal.style.display = 'block';
+                    }
+                });
+            }
+
+            // Закрытие модального окна
+            closeModal.addEventListener('click', () => modal.style.display = 'none');
+            window.addEventListener('click', (e) => {
+                if (e.target === modal) modal.style.display = 'none';
+            });
+
+            // Форматирование зарплаты
+            function formatSalary(salary) {
+                if (!salary) return 'Salary not specified';
+                let salaryStr = '';
+                if (salary.from) salaryStr += `from ${salary.from}`;
+                if (salary.to) salaryStr += `${salaryStr ? ' ' : ''}to ${salary.to}`;
+                if (salary.currency) salaryStr += ` ${salary.currency}`;
+                return salaryStr.trim() || 'Salary not specified';
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CareerAI - Find your perfect job match with AI-powered job recommendations">
+    <meta name="keywords" content="job search, career, AI, resume, job matching">
+    <title>JobFinder - Find Your Perfect Job Match</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <a href="{{ url_for('index') }}" class="logo">
+                <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                JobFinder
+            </a>
+            <div class="nav-links">
+                <a href="#process">The process</a>
+                <a href="#why-choose">Why choose JobFinder</a>
+                <a href="#ai-powered">AI powered Job-search</a>
+                <a href="#get-started">Get started</a>
+            </div>
+            {% if 'user' in session %}
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Dashboard</a>
+                <a href="{{ url_for('logout') }}" class="btn btn-outline">Logout</a>
+            {% else %}
+            <div class="auth-buttons">
+                <a href="/login" class="btn btn-outline">Sign In</a>
+                <a href="/register" class="btn btn-primary">Sign Up</a>
+            </div>
+            {% endif %}
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="particle-bg"></div>
+        <div class="container">
+            <h1 class="hero-title" data-aos="fade-up">Find Your Perfect Job Match</h1>
+            <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="200">Get personalized job recommendations based on your unique profile, skills, and career goals</p>
+            <div class="hero-buttons" data-aos="fade-up" data-aos-delay="400">
+                <a href="#get-started" class="btn btn-primary hero-btn" id="getMatchesBtn">Get Your Matches</a>
+            </div>
+        </div>
+        <h1 id="process"></h1>
+    </section>
+    
+    <!-- Остальные секции остаются без изменений до формы загрузки -->
+    <section class="section" >
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" data-aos="fade-up">The Process</h2>
+                <p class="section-subtitle" data-aos="fade-up" data-aos-delay="200">Four Simple Steps to Success</p>
+            </div>
+            <div class="steps">
+                <div class="step-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Upload Your Resume</h3>
+                    <p class="step-description">Share your professional background, skills, and experience</p>
+                </div>
+                <div class="step-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Get Matched</h3>
+                    <p class="step-description">Receive personalized job recommendations from multiple sources</p>
+                </div>
+                <div class="step-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Explore Options</h3>
+                    <p class="step-description">Compare jobs and companies in detail with our analysis</p>
+                </div>
+                <div class="step-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="step-number">4</div>
+                    <h3 class="step-title">Get Support</h3>
+                    <p class="step-description">Chat with our AI advisor for job search guidance</p>
+                </div>
+            </div>
+        </div>
+        <h1 id="why-choose"></h1>
+    </section>
+
+    <section class="section" id="why-choose">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" data-aos="fade-up">Why Choose JobFinder</h2>
+                <p class="section-subtitle" data-aos="fade-up" data-aos-delay="200">Everything You Need to Make the Right Choice</p>
+            </div>
+            <div class="features">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Smart Matching</h3>
+                    <p class="feature-description">Get tailored job suggestions based on your resume, skills, interests, and career aspirations</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">AI Guidance</h3>
+                    <p class="feature-description">Get instant answers about jobs, companies, and application requirements from our AI advisor</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Career Planning</h3>
+                    <p class="feature-description">Discover your ideal career path and get matched with jobs that align with your professional goals</p>
+                </div>
+            </div>
+        </div>
+        <h1 id="ai-powered"></h1>
+    </section>
+
+    <section class="section" id="ai-powered">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" data-aos="fade-up">AI-Powered Job Search</h2>
+                <p class="section-subtitle" data-aos="fade-up" data-aos-delay="200">How our technology helps you find better opportunities</p>
+            </div>
+            <div class="benefits-container" data-aos="fade-up" data-aos-delay="400">
+                <div class="benefits-image">
+                    <img src="https://i.pinimg.com/736x/18/06/43/1806438b343308b261f3765342deaa74.jpg" alt="AI Job matching illustration">
+                </div>
+                <div class="benefits-list">
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <div class="benefit-content">
+                            <h3>Resume Analysis</h3>
+                            <p>Our AI extracts and understands your skills, experiences, and qualifications</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            </svg>
+                        </div>
+                        <div class="benefit-content">
+                            <h3>Multi-Source Search</h3>
+                            <p>We scan thousands of job postings from hundreds of job boards and company websites</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M12 2v20"></path>
+                            </svg>
+                        </div>
+                        <div class="benefit-content">
+                            <h3>Personalized Matching</h3>
+                            <p>Advanced algorithms match your profile with the perfect job opportunities</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </div>
+                        <div class="benefit-content">
+                            <h3>Skill Gap Analysis</h3>
+                            <p>Identify what skills you need to develop for your desired career path</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h1 id="get-started"></h1>
+    </section>
+
+    
+
+    <section class="resume-upload" id="get-started">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" data-aos="fade-up">Upload Your Resume</h2>
+                <p class="section-subtitle" data-aos="fade-up" data-aos-delay="200">Let our AI analyze your skills and match you with the perfect job</p>
+            </div>
+            <div class="upload-area" id="uploadArea" data-aos="fade-up" data-aos-delay="400">
+                <div class="country-selection">
+                    <label for="countrySelect">Select Country:</label>
+                    <select id="countrySelect" name="country">
+                        <option value="">Select a country</option>
+                    </select>
+                </div>
+                <p>Drag & Drop your resume here or click to upload</p>
+                <input type="file" id="resumeInput" name="resume" accept=".pdf,.doc,.docx">
+                <label for="resumeInput" class="upload-btn">Choose File</label>
+            </div>
+        </div>
+    </section>
+
+    <!-- Остальные секции остаются без изменений -->
+    <section class="job-listings" id="jobListingsSection">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" data-aos="fade-up">Job Opportunities</h2>
+                <p class="section-subtitle" data-aos="fade-up" data-aos-delay="200">Explore some of the latest job matches for you</p>
+            </div>
+            <div class="job-filters" data-aos="fade-up">
+                <div class="filter-group">
+                    <label>Salary Range</label>
+                    <div class="salary-inputs">
+                        <input type="number" id="salaryFrom" placeholder="From" min="0">
+                        <span>-</span>
+                        <input type="number" id="salaryTo" placeholder="To" min="0">
+                        <select id="salaryCurrency">
+                            <option value="KZT">KZT</option>
+                            <option value="USD">USD</option>
+                            <option value="RUB">RUB</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label>Employment Type</label>
+                    <select id="employmentType">
+                        <option value="">All Types</option>
+                        <option value="full">Full-time</option>
+                        <option value="part">Part-time</option>
+                        <option value="contract">Contract</option>
+                        <option value="temporary">Temporary</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Experience Level</label>
+                    <select id="experienceLevel">
+                        <option value="">Any experience</option>
+                        <option value="noExperience">No experience</option>
+                        <option value="between1And3">1-3 years</option>
+                        <option value="between3And6">3-6 years</option>
+                        <option value="moreThan6">More than 6 years</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Source</label>
+                    <select id="jobSource">
+                        <option value="">All Sources</option>
+                        <option value="hh">HeadHunter</option>
+                    </select>
+                </div>
+                <div class="filter-buttons">
+                    <button id="applyFilters" class="filter-btn">Apply Filters</button>
+                    <button id="resetFilters" class="filter-btn reset">Reset</button>
+                </div>
+            </div>
+            <div class="job-cards" id="jobCardsContainer">
+                <div class="job-card" data-aos="fade-up" data-aos-delay="100" style="display: none;" id="jobCardTemplate">
+                    <div class="job-card-inner">
+                        <h3 class="job-title"></h3>
+                        <div class="job-company"></div>
+                        <div class="job-details"></div>
+                        <div class="similarity-score">Similarity-scores: <span class="job-similarity"></span></div>
+                        <div class="job-card-buttons">
+                            <a href="#" class="job-apply-btn">Apply Now</a>
+                            <button class="job-detailed-btn">Detailed</button>
+                            <button class="add-to-favorites" data-vacancy-id="" data-vacancy-title="" data-vacancy-company="" data-vacancy-url="" data-similarity-score="">Add to favorites</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="detailedModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">×</span>
+            <div class="modal-header">
+                <h2 class="modal-title"></h2>
+                <div class="modal-subheader">
+                    <div class="modal-company"></div>
+                    <div class="modal-match">
+                        <div class="match-score"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="job-info">
+                    <h3>Job Details</h3>
+                    <div class="modal-details"></div>
+                    <div class="modal-salary"></div>
+                    <div class="modal-employment"></div>
+                </div>
+                <div class="ai-analysis">
+                    <h3>AI Analysis</h3>
+                    <div class="analysis-loader">Loading analysis...</div>
+                    <div class="analysis-content" style="display: none;">
+                        <div class="recommendation-section">
+                            <h4>Recommendation</h4>
+                            <p class="recommendation"></p>
+                        </div>
+                        <div class="improvements-section">
+                            <h4>Resume Improvement Suggestions</h4>
+                            <ul class="resume-improvements"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-primary apply-btn" target="_blank">Apply Now</a>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation smooth scroll
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(sectionId);
+                    if (targetSection) {
+                        targetSection.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Get Your Matches button smooth scroll
+            const getMatchesBtn = document.getElementById('getMatchesBtn');
+            getMatchesBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const uploadSection = document.getElementById('get-started');
+                if (uploadSection) {
+                    uploadSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+
+            // Modal functionality
+            const jobCardsContainer = document.getElementById('jobCardsContainer');
+            const modal = document.getElementById('detailedModal');
+            const closeModal = document.querySelector('.close-modal');
+
+            jobCardsContainer.addEventListener('click', function(e) {
+                if (e.target.classList.contains('job-detailed-btn')) {
+                    const vacancyId = e.target.closest('.job-card').getAttribute('data-vacancy-id');
+                    fetch(`/vacancy/${vacancyId}`)
+                        .then(response => response.json())
+                        .then(vacancy => {
+                            modal.querySelector('.modal-title').textContent = vacancy.title;
+                            modal.querySelector('.modal-company').textContent = `Company: ${vacancy.company}`;
+                            modal.querySelector('.modal-details').textContent = vacancy.details;
+                            modal.querySelector('.modal-salary').textContent = `Salary: ${vacancy.salary}`;
+                            modal.querySelector('.modal-employment').textContent = `Type of employment: ${vacancy.employment_type}`;
+
+                            fetch('/analyze-match', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    vacancy: vacancy,
+                                    similarity_score: vacancy.similarity_score
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(analysis => {
+                                modal.querySelector('.match-score').textContent = `Similarity-scores: ${(vacancy.similarity_score * 100).toFixed(2)}%`;
+                                modal.querySelector('.recommendation').textContent = analysis.recommendation;
+                                const improvementsList = modal.querySelector('.resume-improvements');
+                                improvementsList.innerHTML = '';
+                                analysis.improvements.forEach(item => {
+                                    const li = document.createElement('li');
+                                    li.textContent = item;
+                                    improvementsList.appendChild(li);
+                                });
+                            })
+                            .catch(error => {
+                                console.error('Error loading AI analysis:', error);
+                                modal.querySelector('.ai-analysis').innerHTML = '<p>Failed to load AI analysis.</p>';
+                            });
+
+                            modal.style.display = 'block';
+                        })
+                }
+            });
+
+            closeModal.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+
+            window.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            // Initialize AOS
+            AOS.init();
+        });
+    </script>
+</body>
+</html>
