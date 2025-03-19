@@ -12,3 +12,4 @@ Flask-SQLAlchemy
 Flask-WTF
 WTForms
 gunicorn
+email-validator
