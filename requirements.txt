@@ -1,0 +1,13 @@
+Flask
+PyPDF2
+requests
+python-docx
+psutil
+python-magic
+chardet
+google-generativeai
+python-dotenv
+tenacity
+Flask-SQLAlchemy
+Flask-WTF
+WTForms
