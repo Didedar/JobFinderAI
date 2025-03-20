@@ -6,17 +6,17 @@
     <section class="dashboard-section job-listings">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Ваш Dashboard</h2>
-                <p class="section-subtitle">Добро пожаловать, {{ user.username }}!</p>
+                <h2 class="section-title">Your Dashboard</h2>
+                <p class="section-subtitle">Welcome, {{ user.username }}!</p>
             </div>
             <div class="user-info">
-                <h3>Личная информация</h3>
-                <p><strong>Имя пользователя:</strong> {{ user.username }}</p>
+                <h3>Personal information</h3>
+                <p><strong>Name:</strong> {{ user.username }}</p>
                 <p><strong>Email:</strong> {{ user.email }}</p>
-                <p><strong>Тип пользователя:</strong> {{ user.user_type }}</p>
+                <p><strong>User Type:</strong> {{ user.user_type }}</p>
             </div>
             <div class="favorites">
-                <h3>Ваши избранные вакансии</h3>
+                <h3>Your favorite jobs</h3>
                 {% if favorites %}
                     <div class="job-cards" id="favoritesContainer">
                         {% for favorite in favorites %}
@@ -52,14 +52,14 @@
                                                 data-similarity-score="{{ favorite.similarity_score }}"
                                                 data-location="{{ favorite.location }}"
                                                 data-experience-level="{{ favorite.experience_level }}">Detailed</button>
-                                        <button class="remove-favorite" data-vacancy-id="{{ favorite.vacancy_id }}">Удалить</button>
+                                        <button class="remove-favorite" data-vacancy-id="{{ favorite.vacancy_id }}">Delete</button>
                                     </div>
                                 </div>
                             </div>
                         {% endfor %}
                     </div>
                 {% else %}
-                    <p>У вас пока нет избранных вакансий.</p>
+                    <p>You don't have any favorite jobs yet.</p>
                 {% endif %}
             </div>
         </div>
@@ -130,8 +130,8 @@
                             }
                         })
                         .catch(error => {
-                            console.error('Ошибка:', error);
-                            alert('Произошла ошибка при удалении вакансии.');
+                            console.error('Error:', error);
+                            alert('An error occurred while deleting a vacancy.');
                         });
                     }
                 });
