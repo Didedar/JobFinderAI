@@ -8,7 +8,7 @@
     --success: #4CAF50;
     --warning: #FFA726;
     --gradient: linear-gradient(135deg, #2B50D2 0%, #3CAE76 70%, #2B50D2 100%);
-    --header-gradient: linear-gradient(90deg, #1A3C8C 0%, #2D5A6A 100%); /* Новый градиент для шапки */
+    --header-gradient: linear-gradient(90deg, #1A3C8C 0%, #2D5A6A 100%); /* РќРѕРІС‹Р№ РіСЂР°РґРёРµРЅС‚ РґР»СЏ С€Р°РїРєРё */
     --shadow: 0 10px 30px rgba(43, 80, 210, 0.12);
     --white: #FFFFFF;
 }
@@ -33,7 +33,7 @@ body {
     padding: 0 20px;
 }
 
-/* Анимация фона */
+/* РђРЅРёРјР°С†РёСЏ С„РѕРЅР° */
 .particle-bg {
     position: absolute;
     top: 0;
@@ -51,9 +51,9 @@ body {
     100% { transform: translateY(0) rotate(360deg); }
 }
 
-/* Шапка с новым градиентом */
+/* РЁР°РїРєР° СЃ РЅРѕРІС‹Рј РіСЂР°РґРёРµРЅС‚РѕРј */
 header {
-    background: var(--header-gradient); /* Измененный цвет шапки */
+    background: var(--header-gradient); /* РР·РјРµРЅРµРЅРЅС‹Р№ С†РІРµС‚ С€Р°РїРєРё */
     color: var(--white);
     box-shadow: var(--shadow);
     padding: 20px 0;
@@ -175,7 +175,7 @@ header {
     box-shadow: 0 15px 30px rgba(43, 80, 210, 0.4);
 }
 
-/* Геройская секция */
+/* Р“РµСЂРѕР№СЃРєР°СЏ СЃРµРєС†РёСЏ */
 .hero {
     background: var(--gradient);
     background-size: 200% 200%;
@@ -220,7 +220,7 @@ header {
     font-size: 18px;
 }
 
-/* Общие секции */
+/* РћР±С‰РёРµ СЃРµРєС†РёРё */
 .section {
     background: var(--light-bg);
     padding: 80px 0;
@@ -234,13 +234,13 @@ header {
 .section-title {
     font-size: 32px;
     font-weight: 700;
-    color: #2c3e50; /* Темно-синий для заголовков */
+    color: #2c3e50; /* РўРµРјРЅРѕ-СЃРёРЅРёР№ РґР»СЏ Р·Р°РіРѕР»РѕРІРєРѕРІ */
     margin-bottom: 10px;
 }
 
 .section-subtitle {
     font-size: 16px;
-    color: #7f8c8d; /* Серый для подзаголовков */
+    color: #7f8c8d; /* РЎРµСЂС‹Р№ РґР»СЏ РїРѕРґР·Р°РіРѕР»РѕРІРєРѕРІ */
 }
 
 .steps, .features {
@@ -303,7 +303,7 @@ header {
     transform: scale(1.1);
 }
 
-/* Загрузка резюме */
+/* Р—Р°РіСЂСѓР·РєР° СЂРµР·СЋРјРµ */
 .resume-upload {
     background: var(--white);
     padding: 80px 0;
@@ -431,23 +431,23 @@ header {
     z-index: 2;
 }
 
-/* Вакансии */
+/* Р’Р°РєР°РЅСЃРёРё */
 .job-listings {
     padding: 40px 0;
-    background-color: #f8f9fa; /* Светлый фон для секции */
+    background-color: #f8f9fa; /* РЎРІРµС‚Р»С‹Р№ С„РѕРЅ РґР»СЏ СЃРµРєС†РёРё */
 }
 
 .job-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Адаптивная сетка */
-    gap: 20px; /* Расстояние между карточками */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* РђРґР°РїС‚РёРІРЅР°СЏ СЃРµС‚РєР° */
+    gap: 20px; /* Р Р°СЃСЃС‚РѕСЏРЅРёРµ РјРµР¶РґСѓ РєР°СЂС‚РѕС‡РєР°РјРё */
     justify-items: center;
 }
 
 .job-card {
     width: 100%;
-    max-width: 350px; /* Ограничение максимальной ширины */
-    margin: 0; /* Убираем внешние отступы, используем gap */
+    max-width: 350px; /* РћРіСЂР°РЅРёС‡РµРЅРёРµ РјР°РєСЃРёРјР°Р»СЊРЅРѕР№ С€РёСЂРёРЅС‹ */
+    margin: 0; /* РЈР±РёСЂР°РµРј РІРЅРµС€РЅРёРµ РѕС‚СЃС‚СѓРїС‹, РёСЃРїРѕР»СЊР·СѓРµРј gap */
 }
 
 .job-card:hover {
@@ -489,56 +489,56 @@ header {
 }
 
 .job-card-inner {
-    background: #ffffff; /* Белый фон карточки */
+    background: #ffffff; /* Р‘РµР»С‹Р№ С„РѕРЅ РєР°СЂС‚РѕС‡РєРё */
     border-radius: 12px;
     padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1); /* Мягкая тень */
-    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Плавный ховер-эффект */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1); /* РњСЏРіРєР°СЏ С‚РµРЅСЊ */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* РџР»Р°РІРЅС‹Р№ С…РѕРІРµСЂ-СЌС„С„РµРєС‚ */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 100%; /* Карточки одинаковой высоты */
-    border: 1px solid #e9ecef; /* Тонкая серая рамка */
+    height: 100%; /* РљР°СЂС‚РѕС‡РєРё РѕРґРёРЅР°РєРѕРІРѕР№ РІС‹СЃРѕС‚С‹ */
+    border: 1px solid #e9ecef; /* РўРѕРЅРєР°СЏ СЃРµСЂР°СЏ СЂР°РјРєР° */
 }
 
 .job-card-inner:hover {
-    transform: translateY(-5px); /* Легкий подъем при наведении */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Усиленная тень при наведении */
+    transform: translateY(-5px); /* Р›РµРіРєРёР№ РїРѕРґСЉРµРј РїСЂРё РЅР°РІРµРґРµРЅРёРё */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* РЈСЃРёР»РµРЅРЅР°СЏ С‚РµРЅСЊ РїСЂРё РЅР°РІРµРґРµРЅРёРё */
 }
 
 .job-apply-btn {
     display: inline-block;
-    background: linear-gradient(135deg, #007bff, #0056b3); /* Градиент для кнопки */
+    background: linear-gradient(135deg, #007bff, #0056b3); /* Р“СЂР°РґРёРµРЅС‚ РґР»СЏ РєРЅРѕРїРєРё */
     color: #fff;
     padding: 10px 20px;
     text-decoration: none;
-    border-radius: 25px; /* Скругленные углы */
+    border-radius: 25px; /* РЎРєСЂСѓРіР»РµРЅРЅС‹Рµ СѓРіР»С‹ */
     font-size: 14px;
     font-weight: 500;
     text-align: center;
     transition: background 0.3s ease;
-    align-self: flex-start; /* Кнопка слева внизу */
+    align-self: flex-start; /* РљРЅРѕРїРєР° СЃР»РµРІР° РІРЅРёР·Сѓ */
 }
 
 .job-apply-btn:hover {
-    background: linear-gradient(135deg, #0056b3, #003d82); /* Темнее при наведении */
+    background: linear-gradient(135deg, #0056b3, #003d82); /* РўРµРјРЅРµРµ РїСЂРё РЅР°РІРµРґРµРЅРёРё */
 }
 
 .job-company {
     font-size: 14px;
     font-weight: 500;
-    color: #7f8c8d; /* Серый для компании */
+    color: #7f8c8d; /* РЎРµСЂС‹Р№ РґР»СЏ РєРѕРјРїР°РЅРёРё */
     margin: 0 0 10px 0;
 }
 
 .job-details {
     font-size: 14px;
-    color: #34495e; /* Темно-серый для деталей */
+    color: #34495e; /* РўРµРјРЅРѕ-СЃРµСЂС‹Р№ РґР»СЏ РґРµС‚Р°Р»РµР№ */
     margin: 0 0 12px 0;
     line-height: 1.5;
 }
 
-/* Преимущества */
+/* РџСЂРµРёРјСѓС‰РµСЃС‚РІР° */
 .benefits-container {
     display: flex;
     justify-content: space-between;
@@ -588,7 +588,7 @@ header {
     color: var(--mid-gray);
 }
 
-/* Отзывы */
+/* РћС‚Р·С‹РІС‹ */
 .testimonials {
     background: #E6F4F1;
     padding: 100px 0;
@@ -644,7 +644,7 @@ header {
     font-size: 14px;
 }
 
-/* Призыв к действию */
+/* РџСЂРёР·С‹РІ Рє РґРµР№СЃС‚РІРёСЋ */
 .cta {
     background: var(--gradient);
     padding: 80px 0;
@@ -678,7 +678,7 @@ header {
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
 }
 
-/* Футер */
+/* Р¤СѓС‚РµСЂ */
 .footer {
     background: linear-gradient(135deg, #1A3C8C, #2B50D2);
     padding: 80px 0 40px;
@@ -723,7 +723,7 @@ header {
     border-top: 1px solid var(--mid-gray);
 }
 
-/* Кнопка обратной связи */
+/* РљРЅРѕРїРєР° РѕР±СЂР°С‚РЅРѕР№ СЃРІСЏР·Рё */
 .feedback-button {
     position: fixed;
     bottom: 20px;
@@ -751,15 +751,11 @@ header {
     color: #FFD700;
 }
 
-/* Адаптивность */
+/* РђРґР°РїС‚РёРІРЅРѕСЃС‚СЊ */
 @media (max-width: 768px) {
     .header-content, .hero-buttons {
         flex-direction: column;
         gap: 20px;
-    }
-    .search-bar {
-        width: 100%;
-        padding: 8px 16px;
     }
     .nav-links {
         flex-direction: column;
@@ -797,6 +793,7 @@ header {
         font-size: 28px;
     }
 }
+
 
 .auth-section {
     padding: 60px 0;
@@ -876,10 +873,10 @@ header {
 
 .job-similarity {
     font-weight: 600;
-    color: #007bff; /* Синий для схожести */
+    color: #007bff; /* РЎРёРЅРёР№ РґР»СЏ СЃС…РѕР¶РµСЃС‚Рё */
 }
 
-/* Общие стили контейнера */
+/* РћР±С‰РёРµ СЃС‚РёР»Рё РєРѕРЅС‚РµР№РЅРµСЂР° */
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -903,7 +900,7 @@ header {
     box-shadow: 0 8px 15px rgba(43, 80, 210, 0.2);
 }
 
-/* Модальное окно */
+/* РњРѕРґР°Р»СЊРЅРѕРµ РѕРєРЅРѕ */
 .modal {
     display: none;
     position: fixed;
@@ -927,7 +924,7 @@ header {
     position: relative;
 }
 
-/* Кнопка закрытия */
+/* РљРЅРѕРїРєР° Р·Р°РєСЂС‹С‚РёСЏ */
 .close-modal {
     position: absolute;
     top: 15px;
@@ -942,7 +939,7 @@ header {
     color: var(--dark-gray);
 }
 
-/* Заголовок модального окна */
+/* Р—Р°РіРѕР»РѕРІРѕРє РјРѕРґР°Р»СЊРЅРѕРіРѕ РѕРєРЅР° */
 .modal-header {
     margin-bottom: 20px;
 }
@@ -970,14 +967,14 @@ header {
     color: var(--primary-blue);
 }
 
-/* Тело модального окна */
+/* РўРµР»Рѕ РјРѕРґР°Р»СЊРЅРѕРіРѕ РѕРєРЅР° */
 .modal-body {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-/* Секция Job Details */
+/* РЎРµРєС†РёСЏ Job Details */
 .job-info h3 {
     font-size: 18px;
     font-weight: 600;
@@ -991,7 +988,7 @@ header {
     margin-bottom: 8px;
 }
 
-/* Секция AI Analysis */
+/* РЎРµРєС†РёСЏ AI Analysis */
 .ai-analysis h3 {
     font-size: 18px;
     font-weight: 600;
@@ -1033,7 +1030,7 @@ header {
     color: var(--mid-gray);
 }
 
-/* Футер модального окна */
+/* Р¤СѓС‚РµСЂ РјРѕРґР°Р»СЊРЅРѕРіРѕ РѕРєРЅР° */
 .modal-footer {
     margin-top: 20px;
     text-align: right;
@@ -1115,7 +1112,7 @@ header {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
-    align-items: end; /* Выравнивание по нижнему краю */
+    align-items: end; /* Р’С‹СЂР°РІРЅРёРІР°РЅРёРµ РїРѕ РЅРёР¶РЅРµРјСѓ РєСЂР°СЋ */
 }
 
 .filter-group {
@@ -1124,16 +1121,16 @@ header {
     gap: 8px;
 }
 
-/* Стили для блока с кнопками */
+/* РЎС‚РёР»Рё РґР»СЏ Р±Р»РѕРєР° СЃ РєРЅРѕРїРєР°РјРё */
 .filter-buttons {
     display: flex;
     gap: 10px;
     align-items: center;
     justify-content: flex-start;
-    grid-column: span 2; /* Занимает две колонки в сетке */
+    grid-column: span 2; /* Р—Р°РЅРёРјР°РµС‚ РґРІРµ РєРѕР»РѕРЅРєРё РІ СЃРµС‚РєРµ */
 }
 
-/* Стили для кнопок фильтра */
+/* РЎС‚РёР»Рё РґР»СЏ РєРЅРѕРїРѕРє С„РёР»СЊС‚СЂР° */
 .filter-btn {
     padding: 10px 20px;
     border: none;
@@ -1284,4 +1281,173 @@ header {
     cursor: pointer;
     font-weight: bold;
     font-size: 18px;
+}
+ 
+/* Мобильное бургер-меню */
+.mobile-nav-toggle {
+    display: none; /* Скрыто по умолчанию */
+    width: 40px;
+    height: 40px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 101;
+}
+
+.mobile-nav-toggle span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background: var(--white);
+    margin: 5px auto;
+    transition: all 0.3s ease;
+}
+
+.mobile-nav-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(7px, 7px);
+}
+
+.mobile-nav-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-nav-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* Базовые стили для десктопа (без изменений) */
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+.mobile-nav-toggle {
+    display: none; /* Скрыто на десктопе */
+}
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+.auth-buttons {
+    display: flex;
+    gap: 12px;
+}
+.btn {
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 500;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+.btn-outline {
+    border: 2px solid var(--white);
+    color: var(--white);
+    background: transparent;
+}
+.btn-primary {
+    background: var(--gradient);
+    color: var(--white);
+    border: none;
+    box-shadow: 0 8px 20px rgba(43, 80, 210, 0.2);
+}
+/* Медиа-запрос для мобильных устройств */
+/* Медиа-запрос для мобильных устройств */
+@media (max-width: 767px) {
+    header {
+        padding: 10px 0 0; /* Отступ только сверху */
+    }
+
+    .header-content {
+        flex-direction: column;
+        align-items: center;
+        padding: 0 15px;
+    }
+
+    .mobile-nav-toggle {
+        display: block;
+        position: absolute;
+        left: 15px;
+        top: 15px;
+        width: 40px;
+        height: 40px;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    .mobile-nav-toggle span {
+        display: block;
+        width: 25px;
+        height: 3px;
+        background: var(--white);
+        margin: 5px auto;
+        transition: all 0.3s ease;
+    }
+
+    .mobile-nav-toggle.active span:nth-child(1) {
+        transform: rotate(45deg) translate(7px, 7px);
+    }
+
+    .mobile-nav-toggle.active span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .mobile-nav-toggle.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -7px);
+    }
+
+    .logo {
+        font-size: 24px;
+        margin: 10px 0;
+    }
+
+    .nav-links {
+        display: none;
+        position: fixed;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background: var(--header-gradient);
+        padding: 20px;
+        flex-direction: column;
+        gap: 15px;
+        z-index: 100;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .nav-links a {
+        padding: 10px;
+        font-size: 16px;
+        width: 100%;
+        text-align: left;
+    }
+
+    .auth-buttons {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 10px;
+    }
+
+    .btn {
+        padding: 8px 18px;
+        font-size: 14px;
+        min-width: 80px;
+        border-radius: 20px;
+    }
+
+    /* Увеличенные стили для кнопки .remove-favorite на мобильных */
+    .remove-favorite {
+        padding: 8px 18px; /* Увеличенные отступы */
+        font-size: 14px; /* Увеличенный шрифт */
+        min-width: 80px; /* Минимальная ширина для читаемости */
+        border-radius: 20px; /* Чуть больше радиус для пропорций */
+    }
 }
