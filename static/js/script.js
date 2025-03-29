@@ -1,25 +1,60 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Инициализация AOS, если библиотека подключена
-    if (typeof AOS !== 'undefined') {
-        AOS.init({
-            duration: 800,
-            once: true
+    // Бургер-меню
+    const navToggle = document.querySelector('.mobile-nav-toggle');
+    const navMenu = document.querySelector('.nav-links');
+
+    if (navToggle && navMenu) {
+        navToggle.addEventListener('click', function() {
+            this.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        navMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
         });
     }
 
-    // Инициализация Swiper, если библиотека подключена
-    if (typeof Swiper !== 'undefined') {
-        new Swiper('.swiper-container', {
-            slidesPerView: 1,
-            spaceBetween: 40,
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true
-            },
-            breakpoints: {
-                768: { slidesPerView: 2 },
-                1024: { slidesPerView: 3 }
+    // Плавное прокручивание только для якорей на текущей странице
+    document.querySelectorAll('a[href*="#"]').forEach(link => {
+        link.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            const [path, hash] = href.split('#');
+            const currentPath = window.location.pathname;
+
+            // Если ссылка указывает на текущую страницу
+            if (path === currentPath || (path === '/' && currentPath === '/')) {
+                e.preventDefault();
+                if (hash) {
+                    const target = document.querySelector(`#${hash}`);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
             }
+            // Если путь отличается (например, переход с /dashboard на /#process), ничего не делаем
+        });
+    });
+
+    // Прокручивание при загрузке страницы с якорем
+    const hash = window.location.hash;
+    if (hash) {
+        const target = document.querySelector(hash);
+        if (target) {
+            setTimeout(() => {
+                target.scrollIntoView({ behavior: 'smooth' });
+            }, 100); // Задержка для полной загрузки
+        }
+    }
+
+    // Инициализация AOS
+    if (typeof AOS !== 'undefined') {
+        AOS.init({
+            duration: 800,
+            once: true,
+            disable: window.innerWidth < 768 ? true : false
         });
     }
 
@@ -34,18 +69,41 @@ document.addEventListener('DOMContentLoaded', function() {
     const uploadArea = document.getElementById('uploadArea');
     const resumeInput = document.getElementById('resumeInput');
     const jobCardsContainer = document.getElementById('jobCardsContainer');
-    const jobCardTemplate = document.getElementById('jobCardTemplate'); // Если используется шаблон
+    const jobCardTemplate = document.getElementById('jobCardTemplate');
     const jobListingsSection = document.getElementById('jobListingsSection');
     const modal = document.getElementById('detailedModal');
     const closeModal = modal ? modal.querySelector('.close-modal') : null;
     const countrySelect = document.getElementById('countrySelect');
+
+    // Создание выбора региона
+    let regionSelect = null;
+    if (countrySelect) {
+        const regionSelectContainer = document.createElement('div');
+        regionSelectContainer.className = 'form-group region-select-container';
+        regionSelectContainer.style.display = 'none';
+        
+        const regionSelectLabel = document.createElement('label');
+        regionSelectLabel.setAttribute('for', 'regionSelect');
+        regionSelectLabel.textContent = 'Select Region';
+        
+        regionSelect = document.createElement('select');
+        regionSelect.id = 'regionSelect';
+        regionSelect.className = 'form-control';
+        regionSelect.innerHTML = '<option value="">Select a region</option>';
+        
+        regionSelectContainer.appendChild(regionSelectLabel);
+        regionSelectContainer.appendChild(regionSelect);
+        
+        countrySelect.parentNode.insertAdjacentElement('afterend', regionSelectContainer);
+    }
 
     // Скрытие секции вакансий при загрузке
     if (jobListingsSection) {
         jobListingsSection.style.display = 'none';
     }
 
-    // Загрузка списка стран из API HeadHunter (добавляем проверку на существование countrySelect)
+    // Загрузка списка стран и настройка двухэтапного выбора
+    let areasData = [];
     if (countrySelect) {
         fetch('https://api.hh.ru/areas')
             .then(response => {
@@ -53,31 +111,61 @@ document.addEventListener('DOMContentLoaded', function() {
                 return response.json();
             })
             .then(areas => {
+                areasData = areas;
                 populateCountrySelect(areas, countrySelect);
             })
             .catch(error => {
                 console.error('Error fetching countries:', error);
                 countrySelect.innerHTML = '<option value="">Error loading countries</option>';
             });
-    }
 
-    // Функция заполнения выпадающего списка стран
-    function populateCountrySelect(areas, selectElement) {
-        if (!selectElement) return;
-        
-        areas.forEach(area => {
-            const option = document.createElement('option');
-            option.value = area.id;
-            option.textContent = area.name;
-            selectElement.appendChild(option);
+        // Заполнение только стран
+        function populateCountrySelect(areas, selectElement) {
+            if (!selectElement) return;
+            
+            while (selectElement.options.length > 1) {
+                selectElement.remove(1);
+            }
+            
+            areas.forEach(area => {
+                const countryOption = document.createElement('option');
+                countryOption.value = area.id;
+                countryOption.textContent = area.name;
+                selectElement.appendChild(countryOption);
+            });
+        }
 
-            if (area.areas && area.areas.length > 0) {
-                area.areas.forEach(subArea => {
-                    const subOption = document.createElement('option');
-                    subOption.value = subArea.id;
-                    subOption.textContent = `${area.name} - ${subArea.name}`;
-                    selectElement.appendChild(subOption);
-                });
+        // Заполнение регионов
+        function populateRegionSelect(countryId) {
+            const country = areasData.find(area => area.id === countryId);
+            const regionSelectContainer = document.querySelector('.region-select-container');
+            
+            if (!country || !country.areas || country.areas.length === 0) {
+                if (regionSelectContainer) regionSelectContainer.style.display = 'none';
+                return;
+            }
+            
+            if (regionSelectContainer) regionSelectContainer.style.display = 'block';
+            
+            while (regionSelect.options.length > 1) {
+                regionSelect.remove(1);
+            }
+            
+            country.areas.forEach(region => {
+                const regionOption = document.createElement('option');
+                regionOption.value = region.id;
+                regionOption.textContent = region.name;
+                regionSelect.appendChild(regionOption);
+            });
+        }
+
+        // Обработчик изменения страны
+        countrySelect.addEventListener('change', function() {
+            const selectedCountryId = this.value;
+            if (selectedCountryId) {
+                populateRegionSelect(selectedCountryId);
+            } else {
+                document.querySelector('.region-select-container').style.display = 'none';
             }
         });
     }
@@ -112,20 +200,24 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Функция загрузки резюме с отображением индикатора и обработкой ответа сервера
+    // Обновленная функция загрузки резюме
     function uploadResume(file) {
         if (!uploadArea || !countrySelect) return;
         
-        const selectedCountryId = countrySelect.value;
-        if (!selectedCountryId) {
-            showErrorMessage('Please select a country before uploading your resume.');
+        // Используем регион если выбран, иначе страну
+        const selectedLocationId = regionSelect && regionSelect.value ? 
+            regionSelect.value : 
+            countrySelect.value;
+            
+        if (!selectedLocationId) {
+            showErrorMessage('Please select a location before uploading your resume.');
             return;
         }
 
-        sessionStorage.setItem('location', selectedCountryId);  // Save location
+        sessionStorage.setItem('location', selectedLocationId);
         uploadArea.classList.add('uploading');
 
-        // Create loader element
+        // ... (остальная часть функции uploadResume остается без изменений)
         const loader = document.createElement('div');
         loader.className = 'upload-loader';
         loader.innerHTML = `
@@ -134,12 +226,10 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         uploadArea.appendChild(loader);
 
-        // Create progress bar
         const progress = document.createElement('div');
         progress.className = 'upload-progress';
         uploadArea.appendChild(progress);
 
-        // Simulate progress (since actual progress might not be available)
         let width = 0;
         const progressInterval = setInterval(() => {
             if (width >= 90) clearInterval(progressInterval);
@@ -149,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const formData = new FormData();
         formData.append('resume', file);
-        formData.append('location', selectedCountryId);
+        formData.append('location', selectedLocationId);
 
         console.log('Sending file to server:', file.name);
 
@@ -157,8 +247,8 @@ document.addEventListener('DOMContentLoaded', function() {
             method: 'POST',
             body: formData
         })
+        // ... (остальная часть функции остается прежней)
         .then(response => {
-            console.log('Response status:', response.status);
             if (!response.ok) {
                 return response.json().then(data => {
                     throw new Error(data.error || `Server error: ${response.status}`);
@@ -167,7 +257,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(data => {
-            // Complete the progress bar
             clearInterval(progressInterval);
             progress.style.width = '100%';
 
@@ -180,11 +269,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     throw new Error(data.error);
                 }
 
-                // Сохраняем текст резюме для последующего использования
                 window.resumeText = data.resume_text;
 
                 if (data.profession && data.profession.profession_ru) {
-                    // Отображаем обнаруженную профессию
                     showSuccessMessage(`Resume successfully uploaded! Detected profession: ${data.profession.profession_ru}`);
                 }
 
@@ -192,7 +279,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     displayVacancies(data.vacancies);
                     if (jobListingsSection) {
                         jobListingsSection.style.display = 'block';
-                        // Прокручиваем к секции с вакансиями
                         jobListingsSection.scrollIntoView({ behavior: 'smooth' });
                     }
                 } else {
@@ -221,13 +307,10 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         document.body.appendChild(alert);
         
-        // Remove alert with fade out animation
         setTimeout(() => {
             alert.style.animation = 'fadeOut 0.5s ease-out forwards';
             setTimeout(() => {
-                if (document.body.contains(alert)) {
-                    document.body.removeChild(alert);
-                }
+                if (document.body.contains(alert)) document.body.removeChild(alert);
             }, 500);
         }, 4500);
     }
@@ -240,16 +323,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (uploadArea) {
             uploadArea.appendChild(alert);
             setTimeout(() => {
-                if (uploadArea.contains(alert)) {
-                    uploadArea.removeChild(alert);
-                }
+                if (uploadArea.contains(alert)) uploadArea.removeChild(alert);
             }, 5000);
         } else {
             document.body.appendChild(alert);
             setTimeout(() => {
-                if (document.body.contains(alert)) {
-                    document.body.removeChild(alert);
-                }
+                if (document.body.contains(alert)) document.body.removeChild(alert);
             }, 5000);
         }
     }
@@ -260,6 +339,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Отображение вакансий
     function displayVacancies(vacancies) {
         if (!jobCardsContainer || !jobCardTemplate) {
             console.error('Job cards container or template not found');
@@ -277,7 +357,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Сортировка по убыванию similarity_score
         vacancies.sort((a, b) => (b.similarity_score || 0) - (a.similarity_score || 0));
         
         vacancies.forEach(vacancy => {
@@ -311,6 +390,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const detailedBtn = jobCard.querySelector('.job-detailed-btn');
             if (detailedBtn) {
                 detailedBtn.setAttribute('data-vacancy-id', vacancy.id || '');
+                // Удаляем предыдущий обработчик, чтобы избежать дублирования
+                detailedBtn.removeEventListener('click', showDetailedView);
                 detailedBtn.addEventListener('click', () => showDetailedView(vacancy));
             }
         
@@ -334,7 +415,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Единый обработчик для добавления в избранное через делегирование событий
+    // Обработчик для добавления в избранное
     if (jobCardsContainer) {
         jobCardsContainer.addEventListener('click', function(e) {
             if (!e.target.classList.contains('add-to-favorites')) return;
@@ -380,14 +461,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Helper function to safely parse numbers with fallback
+    // Вспомогательная функция для безопасного парсинга чисел
     function parseWithDefault(value, defaultValue = null) {
         if (!value) return defaultValue;
         const parsed = parseInt(value, 10);
         return isNaN(parsed) ? defaultValue : parsed;
     }
 
-    // Вспомогательная функция для форматирования зарплаты
+    // Форматирование зарплаты
     function formatSalary(salary) {
         if (!salary) return 'Salary not specified';
         
@@ -405,7 +486,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return salaryStr.trim() || 'Salary not specified';
     }
 
-    // Настройка модального окна для детального просмотра вакансии
+    // Настройка модального окна
     if (closeModal && modal) {
         closeModal.addEventListener('click', () => {
             modal.style.display = 'none';
@@ -418,20 +499,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Функция для отображения детального просмотра вакансии
     function showDetailedView(vacancy) {
         if (!modal) {
             console.error('Modal window not found');
             return;
         }
 
-        // Очищаем и заполняем модальное окно данными о вакансии
         const titleEl = modal.querySelector('.modal-title');
         if (titleEl) titleEl.textContent = vacancy.title || 'Job title';
         
         const companyEl = modal.querySelector('.modal-company');
         if (companyEl) companyEl.textContent = `Company: ${vacancy.company || 'Not specified'}`;
         
-        // Форматируем детали вакансии для лучшей читаемости
         const detailsEl = modal.querySelector('.modal-details');
         if (detailsEl) {
             const snippet = vacancy.snippet || 'Description not available';
@@ -441,11 +521,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 .split('\n')
                 .filter(line => line.trim())
                 .join('\n\n');
-            
             detailsEl.innerHTML = formattedSnippet;
         }
         
-        // Форматируем остальную информацию
         const salaryEl = modal.querySelector('.modal-salary');
         if (salaryEl) salaryEl.textContent = `Salary: ${formatSalary(vacancy.salary)}`;
         
@@ -455,13 +533,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const matchEl = modal.querySelector('.match-score');
         if (matchEl) matchEl.textContent = `Match with your resume: ${Math.round((vacancy.similarity_score || 0) * 100)}%`;
 
-        // Настраиваем кнопку для перехода к вакансии
         const applyBtn = modal.querySelector('.apply-btn');
         if (applyBtn) {
             applyBtn.href = vacancy.url || '#';
         }
 
-        // Показываем индикатор загрузки анализа
         const analysisLoader = modal.querySelector('.analysis-loader');
         const analysisContent = modal.querySelector('.analysis-content');
         if (analysisLoader) analysisLoader.style.display = 'block';
@@ -469,7 +545,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         modal.style.display = 'block';
 
-        // Запрос на анализ соответствия резюме вакансии
         fetch('/analyze-match', {
             method: 'POST',
             headers: {
@@ -491,7 +566,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const recommendation = modal.querySelector('.recommendation');
             if (recommendation) {
-                // Форматируем оценку соответствия
                 const assessment = analysis.match_assessment || 'Match assessment not available';
                 recommendation.innerHTML = `<div class="assessment-text">${assessment}</div>`;
             }
@@ -502,10 +576,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (analysis.recommendations && analysis.recommendations.length > 0) {
                     analysis.recommendations.forEach(improvement => {
                         const li = document.createElement('li');
-                        // Очищаем текст рекомендации от HTML-тегов и форматируем
-                        const cleanText = improvement
-                            .replace(/<[^>]*>/g, '')
-                            .trim();
+                        const cleanText = improvement.replace(/<[^>]*>/g, '').trim();
                         li.textContent = cleanText;
                         improvementsList.appendChild(li);
                     });
@@ -519,9 +590,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (analysisContent) analysisContent.style.display = 'block';
 
             const recommendation = modal.querySelector('.recommendation');
-            if (recommendation) {
-                recommendation.textContent = 'Unable to load analysis';
-            }
+            if (recommendation) recommendation.textContent = 'Unable to load analysis';
 
             const improvementsList = modal.querySelector('.resume-improvements');
             if (improvementsList) {
@@ -532,7 +601,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Filter functionality
+    // Функциональность фильтрации
     const filterButtons = {
         apply: document.getElementById('applyFilters'),
         reset: document.getElementById('resetFilters')
@@ -565,76 +634,69 @@ document.addEventListener('DOMContentLoaded', function() {
         sendFilterRequest(filters);
     }
 
-    // Модификация функции sendFilterRequest для сохранения оригинальных значений similarity_score
-function sendFilterRequest(filters) {
-    fetch('/filter-vacancies', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(filters)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.error) {
-            throw new Error(data.error);
-        }
-        
-        if (data.items && Array.isArray(data.items)) {
-            const formattedVacancies = data.items.map(item => {
-                // Получаем исходное значение similarity_score из сохраненных originalVacancies
-                let similarityScore = 0;
-                if (window.originalVacancies) {
-                    const originalVacancy = window.originalVacancies.find(v => v.id === item.id);
-                    if (originalVacancy) {
-                        similarityScore = originalVacancy.similarity_score || 0;
+    function sendFilterRequest(filters) {
+        fetch('/filter-vacancies', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(filters)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
+            if (data.items && Array.isArray(data.items)) {
+                const formattedVacancies = data.items.map(item => {
+                    let similarityScore = 0;
+                    if (window.originalVacancies) {
+                        const originalVacancy = window.originalVacancies.find(v => v.id === item.id);
+                        if (originalVacancy) {
+                            similarityScore = originalVacancy.similarity_score || 0;
+                        }
                     }
-                }
+                    
+                    return {
+                        id: item.id,
+                        title: item.name,
+                        company: item.employer?.name || 'Company not specified',
+                        url: item.alternate_url,
+                        employment_type: item.employment?.name || 'Not specified',
+                        similarity_score: similarityScore || item.similarity_score || 0,
+                        salary: {
+                            from: item.salary?.from,
+                            to: item.salary?.to,
+                            currency: item.salary?.currency
+                        },
+                        snippet: item.snippet?.requirement || ''
+                    };
+                });
                 
-                return {
-                    id: item.id,
-                    title: item.name,
-                    company: item.employer?.name || 'Company not specified',
-                    url: item.alternate_url,
-                    employment_type: item.employment?.name || 'Not specified',
-                    // Используем оригинальное значение или значение из ответа сервера
-                    similarity_score: similarityScore || item.similarity_score || 0,
-                    salary: {
-                        from: item.salary?.from,
-                        to: item.salary?.to,
-                        currency: item.salary?.currency
-                    },
-                    snippet: item.snippet?.requirement || ''
-                };
-            });
-            
-            // Сортируем вакансии перед отображением
-            formattedVacancies.sort((a, b) => (b.similarity_score || 0) - (a.similarity_score || 0));
-            
-            displayVacancies(formattedVacancies);
-        } else {
-            showNoVacanciesMessage();
-        }
-    })
-    .catch(error => {
-        console.error('Error applying filters:', error);
-        if (jobCardsContainer) {
-            jobCardsContainer.innerHTML = '<p class="error-message">Error loading vacancies. Please try again.</p>';
-        }
-    });
-}
+                formattedVacancies.sort((a, b) => (b.similarity_score || 0) - (a.similarity_score || 0));
+                displayVacancies(formattedVacancies);
+            } else {
+                showNoVacanciesMessage();
+            }
+        })
+        .catch(error => {
+            console.error('Error applying filters:', error);
+            if (jobCardsContainer) {
+                jobCardsContainer.innerHTML = '<p class="error-message">Error loading vacancies. Please try again.</p>';
+            }
+        });
+    }
 
-    // Add event listeners for filter buttons
     if (filterButtons.apply) {
         filterButtons.apply.addEventListener('click', applyFilters);
     }
 
     if (filterButtons.reset) {
         filterButtons.reset.addEventListener('click', () => {
-            // Reset all filter inputs except location
             Object.entries(filterInputs).forEach(([key, input]) => {
                 if (input && key !== 'location') {
                     if (input.tagName === 'SELECT') {
@@ -644,12 +706,10 @@ function sendFilterRequest(filters) {
                     }
                 }
             });
-            // Apply filters after reset
             applyFilters();
         });
     }
 
-    // Add change event listeners to all filter inputs
     Object.values(filterInputs).forEach(input => {
         if (input) {
             input.addEventListener('change', applyFilters);
