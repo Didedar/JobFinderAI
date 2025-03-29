@@ -15,30 +15,29 @@
 <body>
     <header>
         <div class="container header-content">
-            <a href="{{ url_for('index') }}" class="logo">
-                <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                </svg>
-                JobFinder
-            </a>
+            <button class="mobile-nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <a href="{{ url_for('index') }}" class="logo">JobFinder</a>
             <div class="nav-links">
-                <a href="#process">The process</a>
-                <a href="#why-choose">Why choose JobFinder</a>
-                <a href="#ai-powered">AI powered Job-search</a>
-                <a href="#get-started">Get started</a>
+                <a href="{{ url_for('index') }}#process">The process</a>
+                <a href="{{ url_for('index') }}#why-choose">Why choose JobFinder</a>
+                <a href="{{ url_for('index') }}#ai-powered">AI powered Job-search</a>
+                <a href="{{ url_for('index') }}#get-started">Get started</a>
             </div>
-            {% if 'user' in session %}
-                <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Dashboard</a>
-                <a href="{{ url_for('logout') }}" class="btn btn-outline">Logout</a>
-            {% else %}
             <div class="auth-buttons">
-                <a href="/login" class="btn btn-outline">Sign In</a>
-                <a href="/register" class="btn btn-primary">Sign Up</a>
+                {% if 'user' in session %}
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Profile</a>
+                    <a href="{{ url_for('logout') }}" class="btn btn-outline">Logout</a>
+                {% else %}
+                    <a href="/login" class="btn btn-outline">Sign In</a>
+                    <a href="/register" class="btn btn-primary">Sign Up</a>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
     </header>
-
     {% block content %}{% endblock %}
 
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
